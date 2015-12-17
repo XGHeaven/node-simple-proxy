@@ -8,7 +8,7 @@ COPY . /src
 
 RUN cd /src;npm install
 
-RUN add-apt-repository ppa:dhor/myway; sudo apt-get update; apt-get install imagemagick graphicsmagick
+RUN apt-get install imagemagick
 
 WORKDIR /src
 

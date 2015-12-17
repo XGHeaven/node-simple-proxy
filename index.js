@@ -10,7 +10,7 @@ let app = http.createServer((req, res) => {
 	console.log(req.url)
 	let url = req.url.slice(1)
 	console.log(url)
-	if (url[0] === '/' && url[1] === '/') url = 'http:' + url
+	// if (url[0] === '/' && url[1] === '/') url = 'http:' + url
 	console.log(url)
 
 	request(url)

@@ -3,6 +3,7 @@
 let http = require('http')
 let request = require('superagent')
 let parse = require('url-parse')
+let gm = require('gm')
 
 let app = http.createServer((req, res) => {
 	let headers = Object.assign({}, req.headers)
@@ -10,7 +11,7 @@ let app = http.createServer((req, res) => {
 
 	let url = parse(req.url.slice(1))
 
-	if (!url.hostname || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+	if (url.href === '//favicon.ico' || !url.hostname || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
 		res.writeHead(404)
 		res.end()
 		return;
@@ -24,17 +25,30 @@ let app = http.createServer((req, res) => {
 	.buffer()
 	.set(headers)
 	.end((err, newRes) => {
-
-		if (newRes) {
-			res.writeHead(newRes.status, newRes.header)
-		}
-
 		if (err) {
+			if (err.status) {
+				res.writeHead(newRes.status, newRes.header)
+			} else {
+				res.writeHead(err.status || 500)
+			}
 			res.end()
 			return;
 		}
 
-		res.end(newRes.body)
+		gm(newRes.body)
+			.resize(100, 100)
+			.compress(newRes.type.slice(newRes.type.indexOf('/')+1))
+			.toBuffer((err, buffer) => {
+				if (err) {
+					res.writeHead(500)
+					res.end()
+					return
+				}
+
+				newRes.header['content-length'] = buffer.length
+				res.writeHead(newRes.status, newRes.header)
+				res.end(buffer)
+			})
 	})
 })
 

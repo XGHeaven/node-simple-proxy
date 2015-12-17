@@ -8,6 +8,8 @@ COPY . /src
 
 RUN cd /src;npm install
 
+RUN apt-get install imagemagick graphicsmagick
+
 WORKDIR /src
 
 EXPOSE 80

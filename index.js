@@ -2,18 +2,25 @@
 
 let http = require('http')
 let request = require('superagent')
+let parse = require('url-parse')
 
 let app = http.createServer((req, res) => {
 	let headers = Object.assign({}, req.headers)
 	delete headers['host'];
 
-	console.log(req.url)
-	let url = req.url.slice(1)
-	console.log(url)
-	// if (url[0] === '/' && url[1] === '/') url = 'http:' + url
-	console.log(url)
+	let url = parse(req.url.slice(1))
 
-	request(url)
+	if (!url.hostname || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+		res.writeHead(404)
+		res.end()
+		return;
+	}
+
+	url.protocol || url.set('protocol', 'http:')
+
+	console.log(url.toString())
+
+	request(url.toString())
 	.buffer()
 	.set(headers)
 	.end((err, newRes) => {

@@ -26,7 +26,6 @@ let app = http.createServer((req, res) => {
 	.set(headers)
 	.end((err, newRes) => {
 		if (err) {
-			console.log(err)
 			if (err.status) {
 				res.writeHead(newRes.status, newRes.header)
 			} else {
@@ -40,7 +39,6 @@ let app = http.createServer((req, res) => {
 			.compress('None')
 			.toBuffer((err, buffer) => {
 				if (err) {
-					console.log(err)
 					res.writeHead(500)
 					res.end()
 					return

@@ -9,7 +9,7 @@ let app = http.createServer((req, res) => {
 	let headers = Object.assign({}, req.headers)
 	delete headers['host'];
 
-	let url = parse(req.url.slice(1))
+	let url = parse(decodeURIComponent(req.url.slice(1)))
 
 	if (url.href === '//favicon.ico' || !url.hostname || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
 		res.writeHead(404)

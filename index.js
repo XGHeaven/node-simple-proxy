@@ -3,7 +3,7 @@
 let http = require('http')
 let request = require('superagent')
 let parse = require('url-parse')
-let gm = require('gm')
+let im = require('gm').subClass({imageMagick: true})
 
 let app = http.createServer((req, res) => {
 	let headers = Object.assign({}, req.headers)
@@ -35,8 +35,7 @@ let app = http.createServer((req, res) => {
 			return;
 		}
 
-		gm(newRes.body)
-			.resize(100, 100)
+		im(newRes.body)
 			.compress(newRes.type.slice(newRes.type.indexOf('/')+1))
 			.toBuffer((err, buffer) => {
 				if (err) {
